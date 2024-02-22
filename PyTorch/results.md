@@ -7,12 +7,12 @@
 | RNN torch     |        1 | sMNIST   |            |            |         |          |        |                00:00:08 |            | not learning
 | RNN torch     |        3 | sMNIST   |            |            |         |          |        |                00:00:11 |            | not learning
 | DiagReLURNN   |        1 | sMNIST   |            |            |         |          |        |                00:00:xx |      3'338 |
-| DiagReLURNN   |        3 | sMNIST   |            |            |         |          |        |                00:00:xx |    135'434 | 
-| LSTM          |        1 | sMNIST   |            |            |         |          |        |                00:02:30 |    267'786 | not learning
-| LSTM          |        3 | sMNIST   |            |            |         |          |        |                00:15:00 |  1'320'458 | tooooo slow
-| LSTM torch    |        1 | rowMNIST |          1 |            |         |          |        |                00:00:08 |    266'762 | learning
-| LSTM torch    |        1 | sMNIST   |            |            |         |          |        |                00:00:15 |    266'762 | not learning
-| LSTM torch    |        3 | sMNIST   |            |            |         |          |        |                00:00:24 |  1'317'386 | not learning
+| DiagReLURNN   |        3 | sMNIST   |            |            |         |          |      5 |                00:00:xx |    135'434 | 
+| Custom LSTM   |        1 | sMNIST   |            |            |         |          |        |                00:02:36 |    267'786 | not learning but I won't use it so I won't fix it
+| Custom LSTM   |        3 | sMNIST   |            |            |         |          |        |                00:15:00 |  1'320'458 | tooooo slow
+| LSTM torch    |        1 | rowMNIST |      99.00 |            |         |          |        |                00:00:08 |    266'762 | 
+| LSTM torch    |        1 | sMNIST   |      69.4  |      1.070 |   78.50 |   0.679  |      5 |                00:00:15 |    266'762 | 
+| LSTM torch    |        3 | sMNIST   |      89.3  |      0.358 |   92.20 |   0.262  |      5 |                00:00:24 |  1'317'386 |
 
 
 
