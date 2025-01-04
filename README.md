@@ -8,3 +8,7 @@
   - abstract classes are meant to be inherited by other classes
   - abstract methods are meant to enforce the overwritting by the inheriting classes 
   - the dataclass decorator is a shortcut to create classes with __init__, __repr__, __eq__, __hash__ methods
+
+`jax0_types.ipynb`: 
+- jax.Array and jnp.ndarray are the same
+- an array with one element has a shape of (1,) while the value of the element is a scalar and has a shape of ()
