@@ -27,3 +27,5 @@
 - workaround: use a wrapper function to which you pass the class parameters 
     - the wrapper will unflatten the instance
     - you can then return the modified instance parameters and modify the instance outside the wrapper 
+
+`eqx2_CNN.ipynb`, `eqx2b_CNN_BN.ipynb`, `eqx3_RNN.ipynb`: running the examples from Equinox tutorial
