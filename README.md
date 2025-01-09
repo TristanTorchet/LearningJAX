@@ -22,6 +22,7 @@
 
 `jax2_jit.ipynb`: basic usage of jax.jit --> <font color='red'> TODO </font>
 - asynchronous dispatch: jax offloads the computation to the accelerator and returns a future so the main thread can continue (to time we need to use `block_until_ready`)
+- tracing: jaspr and static arguments and static operations (using numpy)
 
 `jax3_jit_classes.ipynb`:
 - you cannot jit a class method directly, the tracer will consider the class attributes as constants
