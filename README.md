@@ -31,3 +31,6 @@
     - you can then return the modified instance parameters and modify the instance outside the wrapper 
 
 `eqx2_CNN.ipynb`, `eqx2b_CNN_BN.ipynb`, `eqx3_RNN.ipynb`: running the examples from Equinox tutorial
+
+## Learning by doing
+`ex1_heinsen_affine_cumsum.ipynb`: implementing Efficient Parallelization of a Ubiquitous Sequential Computation, Franz A. Heinsen (2023)
