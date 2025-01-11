@@ -34,3 +34,6 @@
 
 ## Learning by doing
 `ex1_heinsen_affine_cumsum.ipynb`: implementing Efficient Parallelization of a Ubiquitous Sequential Computation, Franz A. Heinsen (2023)
+- implementing the affine cumsum in a vanilla way
+- implementing Heinsen formula
+- studying the stability issues <font color='red'> TODO </font>
