@@ -1,12 +1,37 @@
 
 The following is the table of results
 
-| Model | Task | Train Acc | Epochs | F1 | AUC |
+| Model       | n layers | Task     | Train Acc | Loss   | Epochs | time (hh:mm:ss) |
+|-------------|----------|----------|-----------|--------|--------|-----------------|
+| (slow) SRN  |        1 | rowMNIST |      0.82 |        |      1 |        00:02:00 |
+| SRN         |        1 | rowMNIST |      0.78 |        |      1 |        00:01:02 |
+| SRN         |        1 | sMNIST   |      0.1  |        |      1 |        00:01:16 |
+| SRN         |        3 | rowMNIST |      0.87 |        |      1 |        00:02:58 |
+| SRN         |        3 | sMNIST   |      0.1  |        |      1 |        00:03:39 |
 
+
+1d_SRN - rowMNIST
+Training: 100%|██████████| 468/468 [02:02<00:00,  3.83it/s, accuracy=0.852, loss=0.567]
+Epoch 0 | Loss: 0.589563250541687 | Accuracy: 0.8118823170661926
+Training: 100%|██████████| 468/468 [01:59<00:00,  3.91it/s, accuracy=0.797, loss=0.542]
 
 1e_scanSRN - rowMNIST
-Training: 100%|██████████| 468/468 [03:25<00:00,  2.28it/s, accuracy=0.898, loss=1.25]
-Epoch 0 | Loss: 1.279372215270996 | Accuracy: 0.8718449473381042
+Training: 100%|██████████| 468/468 [01:04<00:00,  7.24it/s, accuracy=0.914, loss=0.25] 
+Epoch 0 | Loss: 0.7187735438346863 | Accuracy: 0.781617283821106
+
+1e_scanSRN - sMNIST
+Training: 100%|██████████| 468/468 [01:16<00:00,  6.09it/s, accuracy=0.0781, loss=2.3] 
+Epoch 0 | Loss: 2.293076276779175 | Accuracy: 0.12234575301408768
+
+1e_scanSRN - 3 layers - rowMNIST
+Training: 100%|██████████| 468/468 [02:58<00:00,  2.62it/s, accuracy=0.953, loss=0.195] 
+Epoch 0 | Loss: 0.44230347871780396 | Accuracy: 0.8671040534973145
+
+1e_scanSRN - 3 layers - sMNIST
+Training: 100%|██████████| 468/468 [03:39<00:00,  2.13it/s, accuracy=0.211, loss=2.11] 
+Epoch 0 | Loss: 2.2509360313415527 | Accuracy: 0.15246060490608215
+
+
 
 1f_scanMLSRN - rowMNIST (interrupted)
 Training:   6%|▌         | 26/468 [00:31<08:57,  1.22s/it, accuracy=0.492, loss=1.91]
