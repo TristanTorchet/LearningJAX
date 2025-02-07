@@ -1,13 +1,15 @@
 
 The following is the table of results
 
-| Model       | n layers | Task     | Train Acc | Loss   | Epochs | time (hh:mm:ss) |
-|-------------|----------|----------|-----------|--------|--------|-----------------|
-| (slow) SRN  |        1 | rowMNIST |      0.82 |        |      1 |        00:02:00 |
-| SRN         |        1 | rowMNIST |      0.78 |        |      1 |        00:01:02 |
-| SRN         |        1 | sMNIST   |      0.1  |        |      1 |        00:01:16 |
-| SRN         |        3 | rowMNIST |      0.87 |        |      1 |        00:02:58 |
-| SRN         |        3 | sMNIST   |      0.1  |        |      1 |        00:03:39 |
+| Model       | n layers | Task     | Train Acc | Loss   | Epochs | time / epoch (hh:mm:ss) |
+|-------------|----------|----------|-----------|--------|--------|-------------------------|
+| (slow) SRN  |        1 | rowMNIST |      0.82 |        |      1 |                00:02:00 |
+| SRN         |        1 | rowMNIST |      0.78 |        |      1 |                00:01:02 |
+| SRN         |        1 | sMNIST   |      0.1  |        |      1 |                00:01:16 |
+| SRN         |        3 | rowMNIST |      0.87 |        |      1 |                00:02:58 |
+| SRN         |        3 | sMNIST   |      0.1  |        |      1 |                00:03:39 |
+| SRN jit     |        1 | sMNIST   |      0.1  |        |      2 |                00:00:18 |
+| SRN jit     |        3 | sMNIST   |      0.1  |        |      2 |                00:00:48 |
 
 
 1d_SRN - rowMNIST
@@ -30,6 +32,18 @@ Epoch 0 | Loss: 0.44230347871780396 | Accuracy: 0.8671040534973145
 1e_scanSRN - 3 layers - sMNIST
 Training: 100%|██████████| 468/468 [03:39<00:00,  2.13it/s, accuracy=0.211, loss=2.11] 
 Epoch 0 | Loss: 2.2509360313415527 | Accuracy: 0.15246060490608215
+
+1e_scanSRN with jit(apply_model())- sMNIST - 4.2x speedup
+Training: 100%|██████████| 468/468 [00:18<00:00, 25.21it/s, accuracy=0.0859, loss=2.3] 
+Epoch 0 | Loss: 2.2912023067474365 | Accuracy: 0.12393162399530411
+Training: 100%|██████████| 468/468 [00:18<00:00, 25.85it/s, accuracy=0.18, loss=2.28]  
+Epoch 1 | Loss: 2.282238483428955 | Accuracy: 0.1280215084552765
+
+1e_scanSRN with jit(apply_model()) - 3 layers - sMNIST - 4.6x speedup
+Training: 100%|██████████| 468/468 [00:49<00:00,  9.55it/s, accuracy=0.125, loss=2.29] 
+Epoch 0 | Loss: 2.304612398147583 | Accuracy: 0.11965811997652054
+Training: 100%|██████████| 468/468 [00:48<00:00,  9.66it/s, accuracy=0.133, loss=2.3]  
+Epoch 1 | Loss: 2.2971558570861816 | Accuracy: 0.11733774095773697
 
 
 
