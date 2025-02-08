@@ -34,6 +34,9 @@ def create_mnist_classification_dataset(bsz=128, root="./data", version="sequent
         root, train=False, download=True, transform=tf
     )
 
+    # split the dataset into train and val 
+    train, val = torch.utils.data.random_split(train, [50000, 10000])
+
     def custom_collate_fn(batch):
         transposed_data = list(zip(*batch))
         labels = np.array(transposed_data[1])
@@ -46,11 +49,14 @@ def create_mnist_classification_dataset(bsz=128, root="./data", version="sequent
     trainloader = torch.utils.data.DataLoader(
         train, batch_size=bsz, shuffle=True, collate_fn=custom_collate_fn, drop_last=True
     )
+    valloader = torch.utils.data.DataLoader(
+        val, batch_size=bsz, shuffle=False, collate_fn=custom_collate_fn, drop_last=True
+    )
     testloader = torch.utils.data.DataLoader(
         test, batch_size=bsz, shuffle=False, collate_fn=custom_collate_fn, drop_last=True
     )
 
-    return trainloader, testloader, N_CLASSES, SEQ_LENGTH, IN_DIM
+    return trainloader, valloader, testloader, N_CLASSES, SEQ_LENGTH, IN_DIM
 
 
 def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='sequential',
