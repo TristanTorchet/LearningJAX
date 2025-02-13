@@ -84,6 +84,7 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
     axs[0].plot(t, inputs_to_plot, label=labels_input)
     axs[0].set_title(f'Input Sequence = {batch_labels[id_sample]}')
     axs[0].legend(ncol=14, loc='upper center', bbox_to_anchor=(0.5, -0.1))
+    axs[0].grid(True)
 
     legend_ncol = 5 if nb_components_to_plot > 5 else nb_components_to_plot
 
@@ -91,10 +92,14 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         axs[i+1].plot(t, state_hist[i][id_sample, :, :nb_components_to_plot], label=[f'state_{i}' for i in range(nb_components_to_plot)])
         axs[i+1].set_title(f'State History - Layer {i}')
         axs[i+1].legend(ncol=legend_ncol, loc='upper center', bbox_to_anchor=(0.5, -0.1))
+        # axs[i+1].set_ylim(0, 1)
+        # axs[i+1].set_yticks(np.arange(0, 1, 0.1))
+        axs[i+1].grid(True)
 
     axs[-1].plot(t, out_hist[id_sample, :, :], label=[f'out_{i}' for i in range(10)])
     axs[-1].set_title('Output History')
     axs[-1].legend(ncol=5, loc='upper center', bbox_to_anchor=(0.5, -0.1))
+    axs[-1].grid(True)
     
     plt.tight_layout()
     plt.show()
