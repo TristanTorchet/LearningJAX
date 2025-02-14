@@ -1,15 +1,17 @@
 
 The following is the table of results
 
-| Model       | n layers | Task     | Train Acc | Loss   | Epochs | time / epoch (hh:mm:ss) |
-|-------------|----------|----------|-----------|--------|--------|-------------------------|
-| (slow) SRN  |        1 | rowMNIST |      0.82 |        |      1 |                00:02:00 |
-| SRN         |        1 | rowMNIST |      0.78 |        |      1 |                00:01:02 |
-| SRN         |        1 | sMNIST   |      0.1  |        |      1 |                00:01:16 |
-| SRN         |        3 | rowMNIST |      0.87 |        |      1 |                00:02:58 |
-| SRN         |        3 | sMNIST   |      0.1  |        |      1 |                00:03:39 |
-| SRN jit     |        1 | sMNIST   |      0.1  |        |      2 |                00:00:18 |
-| SRN jit     |        3 | sMNIST   |      0.1  |        |      2 |                00:00:48 |
+| Model       | n layers | Task     | Train Acc  | Loss   | Epochs | time / epoch (hh:mm:ss) |
+|-------------|----------|----------|------------|--------|--------|-------------------------|
+| (slow) SRN  |        1 | rowMNIST |      81.18 |        |      1 |                00:02:00 |
+| SRN         |        1 | rowMNIST |      78.16 |        |      1 |                00:01:02 |
+| SRN         |        1 | sMNIST   |      12.23 |        |      1 |                00:01:16 |
+| SRN         |        3 | rowMNIST |      86.71 |        |      1 |                00:02:58 |
+| SRN         |        3 | sMNIST   |      15.24 |        |      1 |                00:03:39 |
+| SRN jit     |        1 | sMNIST   |      12.80 |        |      2 |                00:00:18 |
+| SRN jit     |        3 | sMNIST   |      11.73 |        |      2 |                00:00:48 |
+| DiagReLURNN |        1 | sMNIST   |      47.11 | 1.56   |      3 |                00:00:07 |
+| DiagReLURNN |        3 | sMNIST   |      74.40 | 0.7595 |      5 |                00:00:28 |
 
 
 1d_SRN - rowMNIST
@@ -44,6 +46,36 @@ Training: 100%|██████████| 468/468 [00:49<00:00,  9.55it/s, 
 Epoch 0 | Loss: 2.304612398147583 | Accuracy: 0.11965811997652054
 Training: 100%|██████████| 468/468 [00:48<00:00,  9.66it/s, accuracy=0.133, loss=2.3]  
 Epoch 1 | Loss: 2.2971558570861816 | Accuracy: 0.11733774095773697
+
+======= FROM here everymodel jits apply_model() =========
+
+DiagReLURNN - sMNIST
+Training: 100%|██████████| 390/390 [00:08<00:00, 46.86it/s, accuracy=0.312, loss=1.83] 
+Epoch 0 | train_loss: 2.2349 | train_acc: 23.86% | val_loss: 1.8919 | val_acc: 35.30%
+Training: 100%|██████████| 390/390 [00:07<00:00, 49.75it/s, accuracy=0.383, loss=1.68]
+Epoch 1 | train_loss: 1.7272 | train_acc: 40.21% | val_loss: 1.6351 | val_acc: 40.35%
+Training: 100%|██████████| 390/390 [00:07<00:00, 49.88it/s, accuracy=0.453, loss=1.5] 
+Epoch 2 | train_loss: 1.5606 | train_acc: 47.11% | val_loss: 1.4817 | val_acc: 49.96%
+
+DiagReLURNN - 3 layers - sMNIST
+Training: 100%|██████████| 390/390 [00:28<00:00, 13.58it/s, accuracy=0.406, loss=1.76]
+Epoch 0 | train_loss: 6.8655 | train_acc: 27.04% | val_loss: 1.7030 | val_acc: 41.33%
+Training: 100%|██████████| 390/390 [00:28<00:00, 13.47it/s, accuracy=0.586, loss=1.22]
+Epoch 1 | train_loss: 1.5775 | train_acc: 46.19% | val_loss: 1.2984 | val_acc: 57.81%
+Training: 100%|██████████| 390/390 [00:29<00:00, 13.42it/s, accuracy=0.625, loss=1.12] 
+Epoch 2 | train_loss: 1.2642 | train_acc: 56.97% | val_loss: 0.9963 | val_acc: 66.90%
+Training: 100%|██████████| 390/390 [00:29<00:00, 13.43it/s, accuracy=0.695, loss=0.936]
+Epoch 3 | train_loss: 0.9438 | train_acc: 67.85% | val_loss: 0.7772 | val_acc: 74.95%
+Training: 100%|██████████| 390/390 [00:28<00:00, 13.50it/s, accuracy=0.781, loss=0.699]
+Epoch 4 | train_loss: 0.7595 | train_acc: 74.40% | val_loss: 0.7431 | val_acc: 73.69%
+
+
+
+
+
+=====================================================================================
+OLD RESULTS
+=====================================================================================
 
 
 
