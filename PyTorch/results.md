@@ -91,3 +91,9 @@ Epoch 2/10:
 Train Loss: 2.3017 | Train Acc: 11.12%
 Val Loss: 2.3012 | Val Acc: 11.35%
 Time: 8.71s
+
+
+DiagReLURNN - sMNIST
+================
+Epoch 0: 100%|██████████| 390/390 [01:55<00:00,  3.38it/s, v_num=29, train_loss_step=1.990, train_acc_step=0.250, val_loss_step=2.010, val_acc_step=0.312, val_loss_epoch=1.920, val_acc_epoch=0.326, train_loss_epoch=1.07e+5, train_acc_epoch=0.242]
+Epoch 1: 100%|██████████| 390/390 [01:54<00:00,  3.39it/s, v_num=29, train_loss_step=1.590, train_acc_step=0.453, val_loss_step=1.790, val_acc_step=0.352, val_loss_epoch=1.690, val_acc_epoch=0.396, train_loss_epoch=4.080, train_acc_epoch=0.382]  
