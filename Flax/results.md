@@ -8,8 +8,8 @@ The following is the table of results
 | SRN         |        1 | sMNIST   |      12.23 |        |      1 |                00:01:16 |
 | SRN         |        3 | rowMNIST |      86.71 |        |      1 |                00:02:58 |
 | SRN         |        3 | sMNIST   |      15.24 |        |      1 |                00:03:39 |
-| SRN jit     |        1 | sMNIST   |      12.80 |        |      2 |                00:00:18 |
-| SRN jit     |        3 | sMNIST   |      11.73 |        |      2 |                00:00:48 |
+| SRN jit     |        1 | sMNIST   |      19.32 | 2.1902 |      5 |                00:00:14 | # concat was slow, orthogonal makes it learn
+| SRN jit     |        3 | sMNIST   |      31.40 | 1.9007 |      5 |                00:00:38 |
 | DiagReLURNN |        1 | sMNIST   |      47.11 | 1.56   |      3 |                00:00:07 |
 | DiagReLURNN |        3 | sMNIST   |      74.40 | 0.7595 |      5 |                00:00:28 |
 
