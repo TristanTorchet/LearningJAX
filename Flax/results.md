@@ -1,17 +1,19 @@
 
 The following is the table of results
 
-| Model       | n layers | Task     | Train Acc  | Loss   | Epochs | time / epoch (hh:mm:ss) |
-|-------------|----------|----------|------------|--------|--------|-------------------------|
-| (slow) SRN  |        1 | rowMNIST |      81.18 |        |      1 |                00:02:00 |
-| SRN         |        1 | rowMNIST |      78.16 |        |      1 |                00:01:02 |
-| SRN         |        1 | sMNIST   |      12.23 |        |      1 |                00:01:16 |
-| SRN         |        3 | rowMNIST |      86.71 |        |      1 |                00:02:58 |
-| SRN         |        3 | sMNIST   |      15.24 |        |      1 |                00:03:39 |
-| SRN jit     |        1 | sMNIST   |      19.32 | 2.1902 |      5 |                00:00:14 | # concat was slow, orthogonal makes it learn
-| SRN jit     |        3 | sMNIST   |      31.40 | 1.9007 |      5 |                00:00:38 |
-| DiagReLURNN |        1 | sMNIST   |      47.11 | 1.56   |      3 |                00:00:07 |
-| DiagReLURNN |        3 | sMNIST   |      74.40 | 0.7595 |      5 |                00:00:28 |
+| Model       | n layers | Task     | Train Acc  | Train Loss | Val Acc | Val Loss | Epochs | time / epoch (hh:mm:ss) | Params     |
+|-------------|----------|----------|------------|------------|---------|----------|--------|-------------------------|------------|
+| (slow) SRN  |        1 | rowMNIST |      81.18 |            |         |          |      1 |                00:02:00 ||
+| SRN         |        1 | rowMNIST |      78.16 |            |         |          |      1 |                00:01:02 ||
+| SRN         |        1 | sMNIST   |      12.23 |            |         |          |      1 |                00:01:16 ||
+| SRN         |        3 | rowMNIST |      86.71 |            |         |          |      1 |                00:02:58 ||
+| SRN         |        3 | sMNIST   |      15.24 |            |         |          |      1 |                00:03:39 ||
+| SRN jit     |        1 | sMNIST   |      19.32 |     2.1902 |   23.04 |   2.0303 |      5 |                00:00:14 |    68'874  | # concat was slow, orthogonal makes it learn
+| SRN jit     |        3 | sMNIST   |      31.40 |     1.9007 |   33.77 |   1.8096 |      5 |                00:00:38 |   332'042  |
+| DiagReLURNN |        1 | sMNIST   |      52.46 |     1.4105 |   45.69 |   1.6003 |      5 |                00:00:07 |     3'338  |
+| DiagReLURNN |        3 | sMNIST   |      73.05 |     0.8077 |   74.36 |   0.8166 |      5 |                00:00:29 |   135'434  | 
+| LSTM        |        1 | sMNIST   |      87.39 |     0.3794 |   87.69 |   0.3802 |      5 |                00:00:19 |   267'786  |
+| LSTM        |        3 | sMNIST   |      87.06 |     0.3793 |   88.95 |   0.3324 |      5 |                00:00:55 |  1'320'458 |
 
 
 1d_SRN - rowMNIST

@@ -60,7 +60,7 @@ def create_mnist_classification_dataset(bsz=128, root="./data", version="sequent
 
 
 def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='sequential',
-                  id_sample=0, nb_inputs_to_plot=5, nb_components_to_plot=5):
+                  id_sample=0, nb_inputs_to_plot=5, nb_components_to_plot=5, model_type='srn', variable_to_plot='h'): 
     
     # check if params has the key 'params' or not
     if 'params' not in params:
@@ -68,7 +68,17 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
 
     n_inputs_to_simulate = 5 if id_sample < 5 else id_sample+1
 
-    state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
+    if model_type == 'srn':
+        state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
+    elif model_type == 'lstm':
+        state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
+        print(len(state_hist))
+        print(len(state_hist[0]))
+        print(state_hist[0][0].shape)
+        if variable_to_plot == 'h':
+            state_hist = [state_hist[j][0] for j in range(len(state_hist))]
+        elif variable_to_plot == 'c':
+            state_hist = [state_hist[j][1] for j in range(len(state_hist))]
 
     t = jnp.arange(784) if dataset_version == "sequential" else jnp.arange(28)
 
