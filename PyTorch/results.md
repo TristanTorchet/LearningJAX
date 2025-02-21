@@ -1,4 +1,21 @@
 
+| Model         | n layers | Task     | Train Acc  | Train Loss | Val Acc | Val Loss | Epochs | time / epoch (hh:mm:ss) | Params     |
+|---------------|----------|----------|------------|------------|---------|----------|--------|-------------------------|------------|
+| Custom RNN    |        1 | rowMNIST |      81.23 |     0.5846 |   86.10 |   0.4678 |      2 |                00:00:12 ||
+| Custom RNN    |        1 | sMNIST   |            |            |         |          |        |                00:00:xx |     68'874 | 
+| Custom RNN    |        3 | sMNIST   |            |            |         |          |        |                00:00:xx |    332'042 |
+| RNN torch     |        1 | sMNIST   |            |            |         |          |        |                00:00:08 |            | not learning
+| RNN torch     |        3 | sMNIST   |            |            |         |          |        |                00:00:11 |            | not learning
+| DiagReLURNN   |        1 | sMNIST   |            |            |         |          |        |                00:00:xx |      3'338 |
+| DiagReLURNN   |        3 | sMNIST   |            |            |         |          |        |                00:00:xx |    135'434 | 
+| LSTM          |        1 | sMNIST   |            |            |         |          |        |                00:02:30 |    267'786 | not learning
+| LSTM          |        3 | sMNIST   |            |            |         |          |        |                00:15:00 |  1'320'458 | tooooo slow
+| LSTM torch    |        1 | rowMNIST |          1 |            |         |          |        |                00:00:08 |    266'762 | learning
+| LSTM torch    |        1 | sMNIST   |            |            |         |          |        |                00:00:15 |    266'762 | not learning
+| LSTM torch    |        3 | sMNIST   |            |            |         |          |        |                00:00:24 |  1'317'386 | not learning
+
+
+
 RNN - rowMNIST
 ================
 100%|██████████| 468/468 [00:11<00:00, 39.30it/s]
