@@ -16,6 +16,33 @@ The following is the table of results
 | LSTM          |        3 | sMNIST   |      87.06 |     0.3793 |   88.95 |   0.3324 |      5 |                00:00:55 |  1'320'458 |
 | flax OptiLSTM |        1 | sMNIST   |      64.06 |     1.1030 |   67.72 |   1.0441 |      5 |                00:00:22 |    266'762 |
 | flax OptiLSTM |        3 | sMNIST   |      86.90 |     0.3926 |   89.11 |   0.3271 |      5 |                00:01:05 |  1'317'386 |
+| GRU           |        1 |      256 | sMNIST   |      87.39 |     0.3794 |   87.69 |   0.3802 |      5 |                00:00:17 |    201'482 |
+| GRU           |        1 |       16 | sMNIST   |      41.83 |     1.9047 |   44.94 |   1.7925 |     10 |                00:00:13 |      1'082 |
+| GRU           |        3 |      256 | sMNIST   |      87.06 |     0.3793 |   88.95 |   0.3324 |      5 |                00:00:48 |    990'986 |
+| GRU           |        3 |       16 | sMNIST   |      x.xxx |     x.xxxx |   xx.xx |   x.xxxx |      6 |                00:00:39 |      4'346 | early stopping for 10, destroyed
+
+Parameters complexity:
+- N_h: number of hidden units
+- N_o: number of output units
+- N_i: number of input units
+- L: number of layers
+GRU:
+- W^{zx}, W^{rx}, W^{hx}: N_h x N_i or N_h x N_h
+- W^{zh}, W^{rh}, W^{hh}: N_h x N_h
+- b^z, b^r, b^h: N_h
+- W^{ho}: N_o x N_h
+- b^o: N_o
+- Total:
+  - Single layer: 
+    - W^{zx}    + W^{rx}    + W^{hx}    + W^{zh}    + W^{rh}    + W^{hh}    + W^{ho}    + b^z + b^r + b^h + b^o 
+    - N_h x N_i + N_h x N_i + N_h x N_i + N_h x N_h + N_h x N_h + N_h x N_h + N_o x N_h + 3 x N_h + N_o
+    - 3 x N_h x N_i + 3 x (N_h)^2  + (N_o + 3) x N_h + N_o
+    - 3 x (N_h)^2 + (3 x N_i + N_o + 3) x N_h + N_o
+    - Using: N_h = 256, N_i = 16, N_o = 10: 3 x (256^2) + (3 x 1 + 10 + 3) x 256 + 10 = 200'714
+  - L layers:
+    - N_h x (3 x N_i + (3 + 6(L - 1)) x N_h + N_o + 3 x L) + N_o
+    - (3 + 6(L - 1)) x (N_h)^2 + (3 x N_i + N_o + 4 * L) x N_h + N_o
+    - Using: N_h = 256, N_i = 16, N_o = 10, L = 3: (3 + 6(3 - 1)) x (256)^2 + (3 x 16 + 10 + 3 x 3) x 256 = 987'146
 
 
 1d_SRN - rowMNIST

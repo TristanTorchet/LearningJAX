@@ -79,6 +79,17 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
             state_hist = [state_hist[j][0] for j in range(len(state_hist))]
         elif variable_to_plot == 'c':
             state_hist = [state_hist[j][1] for j in range(len(state_hist))]
+    elif model_type == 'gru':
+        state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
+        print(len(state_hist))
+        print(len(state_hist[0]))
+        print(state_hist[0][0].shape)
+        if variable_to_plot == 'h':
+            state_hist = [state_hist[j][0] for j in range(len(state_hist))]
+        elif variable_to_plot == 'z':
+            state_hist = [state_hist[j][1] for j in range(len(state_hist))]
+        elif variable_to_plot == 'r':
+            state_hist = [state_hist[j][2] for j in range(len(state_hist))]
 
     t = jnp.arange(784) if dataset_version == "sequential" else jnp.arange(28)
 
