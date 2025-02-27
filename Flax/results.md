@@ -30,6 +30,7 @@ The following is the table of results
 | minGRU        |        3 |       64 | sMNIST   |      81.84 |     0.5569 |   81.87 |   0.5561 |      5 |                00:00:28 |     17'546 |
 | minGRU        |        1 |      256 | sMNIST   |      33.75 |     1.8220 |   33.82 |   1.8185 |     10 |                00:00:08 |      3'594 |
 | minGRU        |        3 |      256 | sMNIST   |      88.98 |     0.3387 |   89.54 |   0.3179 |      5 |                00:00:36 |    266'762 |
+| minGRU        |        4 |       64 | sMNIST   |      92.05 |     0.2503 |   90.13 |   0.3374 |     10 |                00:00:38 |     25'866 |
 
 Parameters complexity:
 - N_h: number of hidden units
