@@ -59,6 +59,8 @@ def create_mnist_classification_dataset(bsz=128, root="./data", version="sequent
     return trainloader, valloader, testloader, N_CLASSES, SEQ_LENGTH, IN_DIM
 
 
+def g(x):
+    return jnp.where(x > 0, x+0.5, jax.nn.sigmoid(x))
 
 def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='sequential',
                     id_sample=0, nb_inputs_to_plot=5, nb_components_to_plot=5, model_type='srn', variable_to_plot='h', zoom=True):
@@ -68,6 +70,7 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         'gru': {'h': 0, 'z': 1, 'r': 2},
         'mgu': {'h': 0, 'f': 1},
         'mingru': {'h': 0, 'z': 1, 'z_preact': 2},
+        'mingru_heinsen': {'h': 0, 'z': 1, 'z_preact': 1, 'h_tilde': 2, 'h_tilde_preact': 2},
     }
     
     # check if params has the key 'params' or not
@@ -79,7 +82,7 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
     if model_type == 'srn':
         state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
         n_layers = len(state_hist)
-    elif model_type in ['lstm', 'gru', 'mgu', 'mingru']:
+    elif model_type in ['lstm', 'gru', 'mgu', 'mingru', 'mingru_heinsen']:
         state_hist, out_hist = model.apply(params, batch_inputs[:n_inputs_to_simulate])
         n_layers = len(state_hist)
         print(len(state_hist))
@@ -100,7 +103,7 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         inputs_to_plot = batch_inputs[id_sample, :, 14-nb_inputs_to_plot//2:14+(nb_inputs_to_plot+1)//2]
         labels_input = [f'input_{i}' for i in range(nb_inputs_to_plot)]
 
-    fig, axs = plt.subplots(len(state_hist)+2, n_cols, figsize=(((1200+n_cols*600)*px, (600+200*n_layers)*px)))
+    fig, axs = plt.subplots(len(state_hist)+2, n_cols, figsize=(((1200+(n_cols-1)*600)*px, (600+200*n_layers)*px)))
     
 
 
@@ -112,8 +115,16 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
             axs[0,n].legend(ncol=14, loc='upper center', bbox_to_anchor=(0.5, -0.1))
             axs[0,n].grid(True)
             for i in range(n_layers):
-                axs[i+1,n].plot(t, state_hist[i][n][id_sample, :, :nb_components_to_plot], label=[f'state_{i}' for i in range(nb_components_to_plot)])
-                axs[i+1,n].set_title(f'{list(model_LUT[model_type].keys())[n]} - Layer {i}')
+                variable_name = list(model_LUT[model_type].keys())[n]
+                id_variable = model_LUT[model_type][variable_name]
+                data_to_plot = state_hist[i][id_variable][id_sample, :, :nb_components_to_plot]
+                if model_type == 'mingru_heinsen':
+                    if variable_name == 'z': 
+                        data_to_plot = jax.nn.sigmoid(data_to_plot)
+                    elif variable_name == 'h_tilde':
+                        data_to_plot = g(data_to_plot)
+                axs[i+1,n].plot(t, data_to_plot, label=[f'state_{i}' for i in range(nb_components_to_plot)])
+                axs[i+1,n].set_title(f'{variable_name} - Layer {i}')
                 if nb_components_to_plot < 10:
                     axs[i+1,n].legend(ncol=legend_ncol, loc='upper center', bbox_to_anchor=(0.5, -0.1))
                 # axs[i+1].set_ylim(0, 1)
@@ -133,7 +144,14 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         axs[0].legend(ncol=14, loc='upper center', bbox_to_anchor=(0.5, -0.1))
         axs[0].grid(True)
         for i in range(n_layers):
-            axs[i+1].plot(t, state_hist[i][id_component][id_sample, :, :nb_components_to_plot], label=[f'state_{i}' for i in range(nb_components_to_plot)])
+            data_to_plot = state_hist[i][id_component][id_sample, :, :nb_components_to_plot]
+            if model_type == 'mingru_heinsen':
+                if variable_to_plot == 'z': 
+                    data_to_plot = jax.nn.sigmoid(data_to_plot)
+                elif variable_to_plot == 'h_tilde':
+                    data_to_plot = g(data_to_plot)
+
+            axs[i+1].plot(t, data_to_plot, label=[f'state_{i}' for i in range(nb_components_to_plot)])
             axs[i+1].set_title(f'{variable_to_plot} - Layer {i}')
             if nb_components_to_plot < 10:
                 axs[i+1].legend(ncol=legend_ncol, loc='upper center', bbox_to_anchor=(0.5, -0.1))
