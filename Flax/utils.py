@@ -5,7 +5,9 @@ import torchvision
 import numpy as np
 from torchvision import transforms
 import matplotlib.pyplot as plt
-px = 1/plt.rcParams['figure.dpi']
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+PX = 1/plt.rcParams['figure.dpi']
 
 
 
@@ -103,9 +105,7 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         inputs_to_plot = batch_inputs[id_sample, :, 14-nb_inputs_to_plot//2:14+(nb_inputs_to_plot+1)//2]
         labels_input = [f'input_{i}' for i in range(nb_inputs_to_plot)]
 
-    fig, axs = plt.subplots(len(state_hist)+2, n_cols, figsize=(((1200+(n_cols-1)*600)*px, (600+200*n_layers)*px)))
-    
-
+    fig, axs = plt.subplots(len(state_hist)+2, n_cols, figsize=(((1200+(n_cols-1)*600)*PX, (600+200*n_layers)*PX)))
 
     legend_ncol = 5 if nb_components_to_plot > 5 else nb_components_to_plot
     if n_cols > 1: 
@@ -168,5 +168,65 @@ def plot_dynamics(model, params, batch_inputs, batch_labels, dataset_version='se
         axs[-1].legend(ncol=5, loc='upper center', bbox_to_anchor=(0.5, -0.1))
         axs[-1].grid(True)
     
+    plt.tight_layout()
+    plt.show()
+
+def plot_loss_and_acc(train_losses, val_losses, train_accuracies, val_accuracies):
+    '''
+    Plot the loss and accuracy of the model during training and validation
+    # ax[0] entire loss - ax[0] entire accuracy
+    # ax_in0 zoomed loss - ax_in0 zoomed accuracy
+    '''
+
+    t = np.arange(len(val_losses))
+    offset = 20
+    fig, ax = plt.subplots(1, 2, figsize=(1200*PX, 600*PX))
+
+    ax[0].plot(t, train_losses, label='train')
+    ax[0].plot(t, val_losses, label='val')
+    ax[0].set_title('Loss')
+    ax[0].legend()
+    ax[0].set_yticks(np.arange(0, 4.0, 0.3))
+    ax[0].set_xticks(np.arange(0, len(val_losses), 5))
+    ax[0].grid()
+    ax[0].set_xlabel('Epoch')
+    ax[0].set_ylabel('Value')
+
+    ax_in0 = inset_axes(ax[0], width="60%", height="60%", loc="upper right")
+    ax_in0.plot(t[offset:], train_losses[offset:], label='train')
+    ax_in0.plot(t[offset:], val_losses[offset:], label='val')
+    ax_in0.legend()
+    # ax_in0.set_yticks(np.arange(0, np.max(train_losses[offset:]).round(2), 0.1))
+    ax_in0.set_xticks(np.arange(offset, len(val_losses), 5))
+    # set ylim
+    y_min = min(np.min(train_losses[offset:]), np.min(val_losses[offset:])) * 0.9
+    y_max = max(np.max(train_losses[offset:]), np.max(val_losses[offset:])) * 1.1
+    ax_in0.set_ylim(y_min, y_max)
+    ax_in0.set_yticks(np.arange(round(y_min, 2), round(y_max, 2), 0.025))
+    ax_in0.grid()
+
+
+    ax[1].plot(t, train_accuracies, label='train')
+    ax[1].plot(t, val_accuracies, label='val')
+    ax[1].set_title('Accuracy')
+    ax[1].legend()
+    ax[1].set_yticks(np.arange(0, 1, 0.1))
+    ax[1].set_xticks(np.arange(0, len(val_accuracies), 5))
+    ax[1].grid()
+    ax[1].set_xlabel('Epoch')
+    ax[1].set_ylabel('Value')
+
+    ax_in1 = inset_axes(ax[1], width="60%", height="50%", loc="lower right", borderpad=2)
+    ax_in1.plot(t[offset:], train_accuracies[offset:], label='train')
+    ax_in1.plot(t[offset:], val_accuracies[offset:], label='val')
+    ax_in1.legend()
+    ax_in1.set_xticks(np.arange(offset, len(val_accuracies), 5))
+    # set ylim
+    y_min = min(np.min(val_accuracies[offset:]), np.min(train_accuracies[offset:])) * 0.999
+    y_max = max(np.max(val_accuracies[offset:]), np.max(train_accuracies[offset:])) * 1.001
+    ax_in1.set_ylim(y_min, y_max)
+    ax_in1.set_yticks(np.arange(round(y_min, 2), round(y_max, 2), 0.0025))
+    ax_in1.grid()
+            
     plt.tight_layout()
     plt.show()
