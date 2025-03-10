@@ -302,3 +302,85 @@ def plot_digits(digit, model, params, model_type, batch_inputs, batch_labels, pl
         fig_name = f'digit_{digit}_{variable_to_plot}_l{layer_to_plot}.png' 
     plt.savefig(os.path.join(plt_dir, fig_name))
     plt.show()
+
+
+def plot_all_digits(model, params, model_type, batch_inputs, batch_labels, plt_dir,
+                    variable_to_plot='o', layer_to_plot=0, nb_components_to_plot=5):
+    x_to_plot = jnp.zeros_like(batch_inputs[:10])
+    for d in range(10):
+        y_digit = batch_labels == d
+        x_digit = batch_inputs[y_digit]
+        x_to_plot = x_to_plot.at[d].set(x_digit[0])
+
+    
+    model_LUT = {
+        'lstm': {'h': 0, 'c': 1},
+        'gru': {'h': 0, 'z': 1, 'r': 2},
+        'mgu': {'h': 0, 'f': 1},
+        'mingru': {'h': 0, 'z': 1, 'z_preact': 2},
+        'mingru_heinsen': {'h': 0, 'z': 1, 'z_preact': 1, 'h_tilde': 2, 'h_tilde_preact': 2},
+    }
+    
+    # check if params has the key 'params' or not
+    if 'params' not in params:
+        params = {'params': params}
+
+    
+    state_hist, out_hist = model.apply(params, x_to_plot)
+    
+    if variable_to_plot == 'o':
+        full_data_to_plot = out_hist
+    else:
+        full_data_to_plot = state_hist[layer_to_plot][model_LUT[model_type][variable_to_plot]][:, :, :nb_components_to_plot]
+        if variable_to_plot == 'z': 
+            full_data_to_plot = jax.nn.sigmoid(full_data_to_plot)
+        elif variable_to_plot == 'h_tilde':
+            full_data_to_plot = g(full_data_to_plot)
+
+    min_data = jnp.min(full_data_to_plot)*0.95
+    max_data = jnp.max(full_data_to_plot)*1.05
+    print(full_data_to_plot.shape)
+
+    legend_ncol = 5
+    fig, axs = plt.subplots(6, 4, figsize=(2400*PX, 1600*PX))
+    t = jnp.arange(784)
+    id_sample_x = 0
+    id_sample_var = 0
+    for j in range(6):
+        for i in range(4):
+            if id_sample_x >= len(x_to_plot) or id_sample_var >= len(x_to_plot):
+                break
+            if j%2 == 0:
+                axs[j, i].set_title(f'Digit {id_sample_x}')
+                axs[j, i].plot(t, x_to_plot[id_sample_x])
+                id_sample_x += 1
+            else: 
+                if variable_to_plot == 'o':
+                    axs[j, i].plot(t, full_data_to_plot[id_sample_var], label=[f'out_{i}' for i in range(10)])
+                else:
+                    axs[j, i].plot(t, full_data_to_plot[id_sample_var], label=[f'{variable_to_plot}_{i}' for i in range(nb_components_to_plot)])
+                axs[j, i].set_ylim(min_data, max_data)
+                axs[j, i].grid(True)
+                id_sample_var += 1
+        if id_sample_var >= len(x_to_plot):
+            break
+
+        
+    axs[-1, 0].plot(t, full_data_to_plot[8], label=[f'out_{i}' for i in range(10)])
+    axs[-1, 0].set_ylim(min_data, max_data)
+    axs[-1, 0].grid(True)
+    axs[-1, 1].plot(t, full_data_to_plot[9], label=[f'out_{i}' for i in range(10)])
+    axs[-1, 1].set_ylim(min_data, max_data)
+    axs[-1, 1].grid(True)
+    
+    for i in range(4):
+        axs[-1, i].legend(ncol=legend_ncol, loc='upper center', bbox_to_anchor=(0.5, -0.1))
+
+    plt.tight_layout()
+    if variable_to_plot == 'o':
+        fig_name = f'all_digits_o.png'
+    else:
+        fig_name = f'all_digits_{variable_to_plot}_l{layer_to_plot}.png'
+    plt.savefig(os.path.join(plt_dir, fig_name))
+    os.makedirs(plt_dir, exist_ok=True)
+    plt.show()
