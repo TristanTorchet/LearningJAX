@@ -6,7 +6,7 @@ import numpy as np
 from torchvision import transforms
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-
+import os
 PX = 1/plt.rcParams['figure.dpi']
 
 
@@ -202,7 +202,7 @@ def plot_loss_and_acc(train_losses, val_losses, train_accuracies, val_accuracies
     y_min = min(np.min(train_losses[offset:]), np.min(val_losses[offset:])) * 0.9
     y_max = max(np.max(train_losses[offset:]), np.max(val_losses[offset:])) * 1.1
     ax_in0.set_ylim(y_min, y_max)
-    ax_in0.set_yticks(np.arange(round(y_min, 2), round(y_max, 2), 0.025))
+    ax_in0.set_yticks(np.arange(round(y_min, 2), y_max, 0.025))
     ax_in0.grid()
 
 
@@ -225,8 +225,80 @@ def plot_loss_and_acc(train_losses, val_losses, train_accuracies, val_accuracies
     y_min = min(np.min(val_accuracies[offset:]), np.min(train_accuracies[offset:])) * 0.999
     y_max = max(np.max(val_accuracies[offset:]), np.max(train_accuracies[offset:])) * 1.001
     ax_in1.set_ylim(y_min, y_max)
-    ax_in1.set_yticks(np.arange(round(y_min, 2), round(y_max, 2), 0.0025))
+    ax_in1.set_yticks(np.arange(round(y_min, 2), y_max, 0.0025))
     ax_in1.grid()
             
     plt.tight_layout()
+    plt.show()
+
+def plot_digits(digit, model, params, model_type, batch_inputs, batch_labels, plt_dir, 
+                variable_to_plot='o', layer_to_plot=0, nb_components_to_plot=5):
+    
+
+    y_digit = batch_labels == digit
+    x_to_plot = batch_inputs[y_digit]
+    
+    model_LUT = {
+        'lstm': {'h': 0, 'c': 1},
+        'gru': {'h': 0, 'z': 1, 'r': 2},
+        'mgu': {'h': 0, 'f': 1},
+        'mingru': {'h': 0, 'z': 1, 'z_preact': 2},
+        'mingru_heinsen': {'h': 0, 'z': 1, 'z_preact': 1, 'h_tilde': 2, 'h_tilde_preact': 2},
+    }
+    
+    # check if params has the key 'params' or not
+    if 'params' not in params:
+        params = {'params': params}
+
+
+    state_hist, out_hist = model.apply(params, x_to_plot)
+
+    if variable_to_plot == 'o':
+        full_data_to_plot = out_hist[:9]
+    else: 
+        full_data_to_plot = state_hist[layer_to_plot][model_LUT[model_type][variable_to_plot]][:9, :, :nb_components_to_plot]
+        if variable_to_plot == 'z': 
+            full_data_to_plot = jax.nn.sigmoid(full_data_to_plot)
+        elif variable_to_plot == 'h_tilde':
+            full_data_to_plot = g(full_data_to_plot)
+
+    min_data = jnp.min(full_data_to_plot)*0.95
+    max_data = jnp.max(full_data_to_plot)*1.05
+    print(full_data_to_plot.shape)
+    legend_ncol = 5 
+    fig, axs = plt.subplots(6, 3, figsize=(2400*PX, 1400*PX))
+    t = jnp.arange(784)
+    id_sample_x = 0
+    id_sample_var = 0
+    for i in range(3):
+        for j in range(6):
+            if id_sample_x >= len(x_to_plot) or id_sample_var >= len(x_to_plot):
+                break
+            if j%2 == 0:
+                axs[j, i].plot(t, x_to_plot[id_sample_x])
+                id_sample_x += 1
+            else: 
+                if variable_to_plot == 'o':
+                    axs[j, i].plot(t, full_data_to_plot[id_sample_var], label=[f'out_{i}' for i in range(10)])
+                else:                
+                    axs[j, i].plot(t, full_data_to_plot[id_sample_var][:, :nb_components_to_plot], label=[f'{variable_to_plot}_{i}' for i in range(nb_components_to_plot)])
+
+                axs[j, i].set_ylim(min_data, max_data)
+                axs[j, i].grid(True)
+                id_sample_var += 1
+
+            
+        axs[j, i].legend(ncol=legend_ncol, loc='upper center', bbox_to_anchor=(0.5, -0.1))
+
+        if id_sample_x >= len(x_to_plot) or id_sample_var >= len(x_to_plot):
+            break
+    plt.suptitle(f'Digit {digit}')
+    plt.tight_layout()
+
+    os.makedirs(plt_dir, exist_ok=True)
+    if variable_to_plot == 'o':
+        fig_name = f'digit_{digit}_o.png'
+    else:
+        fig_name = f'digit_{digit}_{variable_to_plot}_l{layer_to_plot}.png' 
+    plt.savefig(os.path.join(plt_dir, fig_name))
     plt.show()
