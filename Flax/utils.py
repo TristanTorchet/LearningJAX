@@ -6,7 +6,10 @@ import numpy as np
 from torchvision import transforms
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from sklearn.metrics import confusion_matrix, classification_report
 import os
+import pandas as pd
+
 PX = 1/plt.rcParams['figure.dpi']
 
 
@@ -186,7 +189,7 @@ def plot_loss_and_acc(train_losses, val_losses, train_accuracies, val_accuracies
     ax[0].plot(t, val_losses, label='val')
     ax[0].set_title('Loss')
     ax[0].legend()
-    ax[0].set_yticks(np.arange(0, 4.0, 0.3))
+    ax[0].set_yticks(np.arange(0, np.max(train_losses), 0.3))
     ax[0].set_xticks(np.arange(0, len(val_losses), 5))
     ax[0].grid()
     ax[0].set_xlabel('Epoch')
@@ -381,6 +384,54 @@ def plot_all_digits(model, params, model_type, batch_inputs, batch_labels, plt_d
         fig_name = f'all_digits_o.png'
     else:
         fig_name = f'all_digits_{variable_to_plot}_l{layer_to_plot}.png'
-    plt.savefig(os.path.join(plt_dir, fig_name))
     os.makedirs(plt_dir, exist_ok=True)
+    plt.savefig(os.path.join(plt_dir, fig_name))
     plt.show()
+
+def plot_cm(lbls, preds, plt_dir):
+    # plot confusion matrix
+    cm = confusion_matrix(lbls, preds)
+    mask = 1 - np.eye(cm.shape[0], dtype=bool)
+    cm_masked = cm * mask
+    # find the 90th percentile
+    percentile = np.percentile(cm_masked, 90)
+    fig, axs = plt.subplots(1,2,figsize=(1000*PX, 500*PX))
+    cax = axs[0].matshow(cm, cmap='Blues_r')
+    cax_offdiag = axs[1].matshow(cm * mask, cmap='Blues_r')
+    fig.colorbar(cax)
+    fig.colorbar(cax_offdiag)
+    # add the text
+    for i in range(10):
+        for j in range(10):
+            color = 'black' if i == j else 'white'
+            axs[0].text(i, j, str(cm[j, i]), va='center', ha='center', color=color)
+            count = cm_masked[j, i]
+            if count > percentile:
+                color = 'red'
+            axs[1].text(i, j, str(count), va='center', ha='center', color=color)
+
+    # make x_tick and y_tick every digit
+    for i in range(2):
+        axs[i].set_xticks(np.arange(10))
+        axs[i].set_yticks(np.arange(10))
+        axs[i].set_xlabel('Predicted')
+        axs[i].set_ylabel('True')
+    plt.suptitle('Confusion Matrix')
+    plt.tight_layout()
+    os.makedirs(plt_dir, exist_ok=True)
+    fig_name = 'confusion_matrix.png'
+    plt.savefig(os.path.join(plt_dir, fig_name))
+
+    plt.show()
+
+def compute_classifcation_report(lbls, preds, sort=True):
+    df = classification_report(lbls, preds, output_dict=True)
+    df = pd.DataFrame(df).T
+    # multiply by 100 to get percentage all columns except support
+    df.iloc[:, :-1] *= 100
+    df = df.round(2)
+    df_summary = df.iloc[-2:, :-1]
+    acc = df.iloc[-3, -2]
+    df = df.iloc[:-3, :-1]
+    df = df.sort_values(by='f1-score', ascending=False) if sort else df
+    return df, df_summary, acc
